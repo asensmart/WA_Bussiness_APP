@@ -26,7 +26,11 @@ var port = process.env.PORT || 3000; // Use PORT from environment or default to 
 console.log(`Server will run on port: ${port}`);
 
 app.get("/", (req, res) => {
-  res.send("Hello World! Server is running.");
+  try {
+    res.send("Hello World! Server is running.");
+  } catch (error) {
+    res.json({ status: 400, error: error.message });
+  }
 });
 
 app.get("/webhook", (req, res) => {
