@@ -1,6 +1,7 @@
 var axios = require("axios");
 const FormData = require("form-data");
 const { fileTypeFromFile } = require("file-type");
+const { text } = require("express");
 
 module.exports = {
   sendWhatsAppMessage: async function () {
@@ -204,6 +205,49 @@ module.exports = {
       });
 
       console.log("Message sent: sendImageWhatsAppIDMessage", response.data);
+      return response;
+    } catch (error) {
+      console.error(
+        "Error sending message:",
+        error.response?.data || error.message
+      );
+    }
+  },
+
+  //   Custom Template Message
+  sendCustomTemplateWhatsAppMessage: async function (name) {
+    try {
+      const response = await axios({
+        method: "POST",
+        url: process.env.WA_URL,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.WA_TOKEN}`,
+        },
+        data: {
+          messaging_product: "whatsapp",
+          to: "918838497173",
+          type: "template",
+          template: {
+            name: "welcome_to_ti_cycle", //template name
+            language: {
+              code: "en_US",
+            },
+            components: [
+              //   {
+              //     type: "header",
+              //     parameters: [{ type: "text", text: name }],
+              //   },
+              {
+                type: "body",
+                parameters: [{ type: "text", text: name }],
+              },
+            ],
+          },
+        },
+      });
+
+      console.log("Message sent:", response.data);
       return response;
     } catch (error) {
       console.error(
